@@ -64,28 +64,4 @@ Explore the code, schematics, and simulations for each project.
 
 ---
 
-## 🚀 How to Use
-1. Browse the folder of the project you're interested in.
-2. Open the source code and circuit diagram.
-3. Load the code onto the corresponding microcontroller.
-4. Simulate or test on real hardware!
-
----
-
-## 💡 Developer
-**Marwan**  
-An embedded systems enthusiast and microcontroller programmer.  
-Always exploring ways to automate and innovate! ❤️
-
----
-
-## ✨ Support the Repo
-If you find these projects helpful, don’t forget to ⭐ star the repository and share it with your friends!
-
----
-
-## 🎁 BONUS! iHerb Discount 💚  
-Since you're into smart systems, why not take care of your health too?
-
-Use my exclusive **iHerb discount code**:
 
