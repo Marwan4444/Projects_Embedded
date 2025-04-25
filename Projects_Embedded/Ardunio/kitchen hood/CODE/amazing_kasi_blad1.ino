@@ -1,0 +1,166 @@
+// Define motor control pins
+const int motorPin1 = 1;  // IN1 on L298N
+const int motorPin2 = 0;  // IN2 on L298N
+ // ENA on L298N
+
+// Define button pins
+const int forwardButton = 4;
+const int reverseButton = 3;
+const int stopButton = 2;
+const int autoswitch = 7;
+
+// Pin Definitions for BCD inputs
+const int BCD_A = 8; // LSB
+const int BCD_B = 9;
+const int BCD_C = 10;
+const int BCD_D = 11; // MSB
+
+// Pin Definitions for digit control
+const int digit1 = 13; // Common anode for digit 1
+const int digit2 = 12; // Common anode for digit 2
+
+
+// LM35 temperature sensor pin
+const int lm35Pin = A0;
+
+
+void setup() {
+  // Set motor control pins as output
+  pinMode(motorPin1, OUTPUT);
+  pinMode(motorPin2, OUTPUT);
+
+
+  // Set button pins as input
+  pinMode(forwardButton, INPUT);
+  pinMode(reverseButton, INPUT);
+  pinMode(stopButton, INPUT);
+  pinMode(autoswitch, INPUT);
+
+  // Initialize motor in stop state
+  digitalWrite(motorPin1, LOW);
+  digitalWrite(motorPin2, LOW);
+
+
+    // Set BCD pins as output
+  pinMode(BCD_A, OUTPUT);
+  pinMode(BCD_B, OUTPUT);
+  pinMode(BCD_C, OUTPUT);
+  pinMode(BCD_D, OUTPUT);
+
+  // Set digit pins as output
+  pinMode(digit1, OUTPUT);
+  pinMode(digit2, OUTPUT);
+
+  // Turn off both digits initially
+  digitalWrite(digit1, LOW);
+  digitalWrite(digit2, LOW);
+
+  pinMode(lm35Pin,INPUT);
+ 
+}
+
+void loop() {
+  // Read button states
+  bool forwardState = digitalRead(forwardButton);
+  bool reverseState = digitalRead(reverseButton);
+  bool stopState = digitalRead(stopButton);
+
+  int sensorValue = analogRead(lm35Pin);
+  float temperature = (sensorValue * 5.0 / 1023.0) * 100.0; // Convert to Celsius
+
+
+
+  // Control motor based on button presses
+  if(!autoswitch)
+  {
+    controlTemperture(temperature);
+
+  }
+  else
+  {
+      
+      if (forwardState == HIGH) {
+    // Run motor forward
+    digitalWrite(motorPin1, HIGH);
+    digitalWrite(motorPin2, LOW);
+    
+
+  } else if (reverseState == HIGH) {
+    // Run motor in reverse
+    digitalWrite(motorPin1, LOW);
+    digitalWrite(motorPin2, HIGH);
+   
+
+  } else if (stopState == HIGH) {
+    // Stop the motor
+    digitalWrite(motorPin1, LOW);
+    digitalWrite(motorPin2, LOW);
+    
+
+  }
+
+  }
+
+  displayNumber((int)temperature);
+  
+
+}
+
+
+
+// Function to display a 2-digit number on the 7-segment display
+void displayNumber(int number) {
+  int digit1Value = number / 10; // Tens place
+  int digit2Value = number % 10; // Units place
+
+  // Display digit 1
+
+
+  
+  digitalWrite(digit1, HIGH); // Turn on digit 1
+  delay(5); 
+  digitalWrite(digit2, LOW);  // Turn off digit 2
+  setBCD(digit2Value);        // Set BCD value for digit 1
+  delay(5);                   // Short delay for multiplexing
+
+  // Display digit 2
+  
+  digitalWrite(digit1, LOW);  // Turn off digit 1
+  delay(5);
+  digitalWrite(digit2, HIGH); // Turn on digit 2
+  setBCD(digit1Value);       // Set BCD value for digit 2
+  delay(5);                  // Short delay for multiplexing
+  
+}
+
+// Function to set the BCD value for the 7447 IC
+void setBCD(int digit) {
+  // Convert the digit to 4-bit BCD
+  digitalWrite(BCD_A, bitRead(digit, 0)); // LSB
+  digitalWrite(BCD_B, bitRead(digit, 1));
+  digitalWrite(BCD_C, bitRead(digit, 2));
+  digitalWrite(BCD_D, bitRead(digit, 3)); // MSB
+}
+
+
+void  controlTemperture(int temperature)
+{
+            if(temperature> 30)
+        {
+          digitalWrite(motorPin1, HIGH);
+          digitalWrite(motorPin2, LOW);
+        }
+        else if(temperature<10)
+        {
+          digitalWrite(motorPin1, LOW);
+          digitalWrite(motorPin2, HIGH);
+
+        }
+        else
+        {
+              // Stop the motor
+          digitalWrite(motorPin1, LOW);
+          digitalWrite(motorPin2, LOW);
+
+  }
+}
